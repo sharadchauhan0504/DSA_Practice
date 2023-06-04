@@ -282,3 +282,164 @@ func findMinimumDifference(_ a: [Int]) {
     print("min: \(min)")
 }
 findMinimumDifference(minDiffArray)
+
+//MARK: Remove Duplicates from Sorted Array
+func removeDuplicates(_ nums: inout [Int]) -> Int {
+    guard !nums.isEmpty else { return 0 }
+
+    var index = 1
+    for i in 1..<nums.count {
+        if nums[i] != nums[index - 1] {
+            nums[index] = nums[i]
+            index += 1
+        }
+    }
+    nums.removeLast(nums.count - index)
+    return nums.count
+}
+
+//MARK: Best time to buy and sell
+func maxProfit(_ prices: [Int]) -> Int {
+    
+    guard !prices.isEmpty else {return 0}
+    
+    var start = 0
+    var end = 0
+    var maxProfit = 0
+    
+    while end <= prices.count - 1 {
+        
+        let startP = prices[start]
+        let endP = prices[end]
+        let profit = endP - startP
+        
+        if startP > endP {
+            start += 1
+        } else {
+            maxProfit = max(maxProfit, profit)
+            end += 1
+        }
+    }
+    
+    return maxProfit
+}
+
+//MARK: Move all zeroes in place
+func moveZeroes(_ nums: inout [Int]) {
+    if nums.count <= 1 {return}
+    
+    for i in 0..<nums.count - 1 {
+        if nums[i] == 0 {
+            var j = i
+            var shouldContinue = true
+            
+            while j < nums.count - 1 && shouldContinue {
+                nums.swapAt(i, j)
+                shouldContinue = false
+            }
+            j += 1
+        }
+    }
+}
+
+//MARK: Max container height
+func maxArea(_ height: [Int]) -> Int {
+    
+    guard !height.isEmpty else { return 0 }
+    var start = 0
+    var end = height.count - 1
+    var maxArea = 0
+    
+    while start < end {
+        let startH = height[start]
+        let endH = height[start]
+        
+        let minH = min(startH, endH)
+        let distanceX = end - start
+        
+        maxArea = max(maxArea, distanceX * minH)
+        
+        if startH < endH {
+            start += 1
+        } else {
+            end -= 1
+        }
+    }
+    return maxArea
+}
+
+//MARK: Linked list ops
+final class LinkedNode {
+    var val: Int
+    var next: LinkedNode?
+    
+    init(_ val: Int) {
+        self.val = val
+    }
+}
+
+
+final class LinkedListOps {
+    
+    /*
+     
+     Reverse a linked list
+     
+     Input:
+     1 -> 2 -> 3 -> 4 -> 5 -> NULL
+     
+     Output:
+     NULL -> 5 -> 4 -> 3 -> 2 -> 1
+     
+     */
+
+    static func reverse(_ node: LinkedNode?) -> LinkedNode? {
+        
+        guard let node else { return nil }
+        
+        var nextNode = node.next
+        var currentNode = LinkedNode(node.val)
+        
+        while nextNode?.next != nil {
+            let newNode = LinkedNode(nextNode!.val)
+            newNode.next = currentNode
+            currentNode = newNode
+            
+            nextNode = nextNode?.next
+        }
+        
+        return currentNode
+    }
+    
+    /*
+     
+     Add two linked list numbers, list is in reverse order
+     
+     2 -> 4 -> 3
+     
+     5 -> 6 -> 4
+     
+     */
+    func addTwoNumbers(_ l1: LinkedNode?, _ l2: LinkedNode?) -> LinkedNode? {
+        var dummyNode: LinkedNode? = LinkedNode(-1)
+        var current = dummyNode
+        var carry = 0
+        
+        var l1 = l1
+        var l2 = l2
+        
+        while l1 != nil || l2 != nil || carry > 0 {
+            
+            var l1Val = l1?.val ?? 0
+            var l2Val = l2?.val ?? 0
+            let sum = l1Val + l2Val + carry
+            
+            carry = sum / 10
+            current?.next = LinkedNode(sum%10)
+            l1 = l1?.next
+            l2 = l2?.next
+            current = current?.next
+        }
+        return dummyNode?.next
+    }
+}
