@@ -51,12 +51,12 @@ func binaryIterative<T: Comparable>(_ a: [T], _ key: T) -> Int? {
 
 
 /*
-   Array should be sorted first!
+ Array should be sorted first!
  
-   Many implementations of binary search calculate
-    midIndex = (lowerBound + upperBound) /2
-   This contains subtle bug that only appears with large arrays, because lowerBound + upperBound may overflow the maximum number an integer can hold.
-   Unlikely on 64-bit CPU, but it definitely can on 32-bit
+ Many implementations of binary search calculate
+ midIndex = (lowerBound + upperBound) /2
+ This contains subtle bug that only appears with large arrays, because lowerBound + upperBound may overflow the maximum number an integer can hold.
+ Unlikely on 64-bit CPU, but it definitely can on 32-bit
  */
 
 
@@ -286,7 +286,7 @@ findMinimumDifference(minDiffArray)
 //MARK: Remove Duplicates from Sorted Array
 func removeDuplicates(_ nums: inout [Int]) -> Int {
     guard !nums.isEmpty else { return 0 }
-
+    
     var index = 1
     for i in 1..<nums.count {
         if nums[i] != nums[index - 1] {
@@ -295,8 +295,12 @@ func removeDuplicates(_ nums: inout [Int]) -> Int {
         }
     }
     nums.removeLast(nums.count - index)
+    print(nums)
     return nums.count
 }
+var duplicates = [1, 1, 2]
+print("removeDuplicates: \(removeDuplicates(&duplicates))")
+
 
 //MARK: Best time to buy and sell
 func maxProfit(_ prices: [Int]) -> Int {
@@ -322,24 +326,6 @@ func maxProfit(_ prices: [Int]) -> Int {
     }
     
     return maxProfit
-}
-
-//MARK: Move all zeroes in place
-func moveZeroes(_ nums: inout [Int]) {
-    if nums.count <= 1 {return}
-    
-    for i in 0..<nums.count - 1 {
-        if nums[i] == 0 {
-            var j = i
-            var shouldContinue = true
-            
-            while j < nums.count - 1 && shouldContinue {
-                nums.swapAt(i, j)
-                shouldContinue = false
-            }
-            j += 1
-        }
-    }
 }
 
 //MARK: Max container height
@@ -392,7 +378,7 @@ final class LinkedListOps {
      NULL -> 5 -> 4 -> 3 -> 2 -> 1
      
      */
-
+    
     static func reverse(_ node: LinkedNode?) -> LinkedNode? {
         
         guard let node else { return nil }
@@ -441,5 +427,96 @@ final class LinkedListOps {
             current = current?.next
         }
         return dummyNode?.next
+    }
+}
+
+/* lengthOfLongestSubstring
+ 
+ Input: s = "abcabcbb"
+ Output: 3
+ Explanation: The answer is "abc", with the length of 3
+ 
+ */
+func lengthOfLongestSubstring(_ s: String) -> Int {
+    guard !s.isEmpty else { return 0 }
+    var len = 0, chars = [Character]()
+    for c in s {
+        if let idx = chars.firstIndex(of: c) {
+            chars.removeSubrange(0...idx)
+        }
+        chars.append(c)
+        len = max(len, chars.count)
+    }
+    return len
+}
+
+
+/*
+ 
+ merge two sorted arrays
+ 
+ */
+
+func merge(_ nums1: inout [Int], _ m: Int, _ nums2: [Int], _ n: Int) {
+    
+    if m == 0 {
+        nums1 = nums2
+    }
+    
+    guard n > 0 else {return}
+    
+    var p1 = m - 1
+    var p2 = n - 1
+    
+    for p in stride(from: m + n - 1, to: 0, by: -1) {
+        if p2 < 0 {
+            break
+        }
+        
+        if p1 >= 0 && nums1[p1] > nums2[p2] {
+            nums1[p] = nums1[p1]
+            p1 -= 1
+        } else {
+            nums1[p] = nums2[p2]
+            p2 -= 1
+        }
+    }
+}
+
+
+/*
+ 
+ String palindrome
+ */
+
+func isPalindrome(_ s: String) -> Bool {
+    let s = Array(s.lowercased().filter { $0.isLetter || $0.isNumber })
+    var left = 0
+    var right = s.count - 1
+    
+    while left <= right {
+        if s[left] != s[right] { return false }
+        left += 1
+        right -= 1
+    }
+    return true
+}
+
+let palindrome = "A man, a plan, a canal: Panama"
+print("isPalindrome: \(isPalindrome(palindrome))")
+
+
+/*
+ 
+ move all zeroes
+ */
+
+func moveZeroes(_ nums: inout [Int]) {
+    var index = 0
+    for i in 0..<nums.count {
+        if nums[i] != 0 {
+            nums.swapAt(index, i)
+            index += 1
+        }
     }
 }
